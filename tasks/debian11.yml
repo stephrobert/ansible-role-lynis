@@ -1,0 +1,13 @@
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: true
+  when: ansible_os_family == 'Debian'
+  become: true
+
+- name: Install package to build oscap
+  ansible.builtin.package:
+    name:
+      - unzip
+      - kbtin
+    state: present
+  become: true

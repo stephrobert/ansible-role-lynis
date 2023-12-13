@@ -1,0 +1,36 @@
+---
+- name: Test version
+  ansible.builtin.shell:
+    cmd: lynis --version | head -1 | awk '{print $6}'
+  register: version
+  failed_when: false
+  changed_when: version.stdout != lynis_version
+- name: Install Lynis
+  when: version.changed and true
+  block:
+    - name: Unzip ComplianceAsCode project
+      ansible.builtin.unarchive:
+        src: "https://cisofy.com/files/lynis-{{ lynis_version }}.tar.gz"
+        dest: /opt/
+        remote_src: true
+        # extra_opts: -j
+      become: true
+- name: Scan
+  when: scan
+  block:
+    - name: Scan
+      ansible.builtin.shell:
+        cmd: /opt/lynis/lynis audit system | ansi2html -l > /tmp/report.html
+        chdir: /opt/lynis
+      become: true
+      register: result
+      failed_when: result.rc == 1
+      changed_when: false
+      tags:
+        - skip_ansible_lint
+    - name: Get reports
+      ansible.builtin.fetch:
+        src: /tmp/report.html
+        dest: ./
+        flat: true
+      become: true
