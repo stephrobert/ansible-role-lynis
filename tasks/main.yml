@@ -1,14 +1,18 @@
 ---
+- name: Include task
+  ansible.builtin.include_tasks:
+    file: "{{ ansible_distribution | lower }}{{ ansible_distribution_major_version }}.yml"
 - name: Test version
   ansible.builtin.shell:
     cmd: lynis --version | head -1 | awk '{print $6}'
   register: version
   failed_when: false
-  changed_when: version.stdout != lynis_version
+  ignore_errors: true
+  changed_when: version.stdout !=
 - name: Install Lynis
   when: version.changed and true
   block:
-    - name: Unzip ComplianceAsCode project
+    - name: Download Lynis
       ansible.builtin.unarchive:
         src: "https://cisofy.com/files/lynis-{{ lynis_version }}.tar.gz"
         dest: /opt/
