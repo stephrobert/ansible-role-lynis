@@ -4,7 +4,7 @@
     file: "{{ ansible_distribution | lower }}{{ ansible_distribution_major_version }}.yml"
 - name: Test version
   ansible.builtin.shell:
-    cmd: lynis --version | head -1 | awk '{print $6}'
+    cmd: /opt/lynis/lynis --version | head -1 | awk '{print $6}'
   register: version
   failed_when: false
   ignore_errors: true
