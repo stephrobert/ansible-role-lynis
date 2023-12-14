@@ -8,7 +8,7 @@
   register: version
   failed_when: false
   ignore_errors: true
-  changed_when: version.stdout !=
+  changed_when: version.stdout != lynis_version
 - name: Install Lynis
   when: version.changed and true
   block:
