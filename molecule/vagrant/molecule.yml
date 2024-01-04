@@ -11,8 +11,7 @@ driver:
 
 platforms:
   - name: lynis-ubuntu
-    # box: debian/bullseye64
-    box: test
+    box: debian/bullseye64
     memory: 2048
     cpus: 2
     interfaces:
